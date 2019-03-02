@@ -5,6 +5,7 @@ public final class SheklyCSVImporter {
     
     enum Error: Swift.Error {
         case missingFolderName
+        case jsonFileCreation
     }
     
     private let arguments: [String]
@@ -50,7 +51,19 @@ public final class SheklyCSVImporter {
         let expenseImporter = ExpenseImporter()
         let expenses = try expenseImporter.getExpenses(forMonthWithFilenameDictionary: monthWithFilenameDictionary, months: months, filesDirectory: filesDirectory, categories: categories)
         
-        //FIXME: nieprawidłowa suma dla wody pitnej, napoje, bułki
+        let jsonCreator = JSONCreator()
+        let jsonData = try jsonCreator.getJSONData(fromExpenses: expenses)
         
+        let jsonPath = filesDirectory.appendingPathComponent("ExpensesJSON.shekly")
+        
+        let attributes: [FileAttributeKey : Any] = [
+            FileAttributeKey.type: "shekly"
+        ]
+        
+        let result = fileManager.createFile(atPath: jsonPath.path, contents: jsonData, attributes: attributes)
+        
+        guard result == true else {
+            throw Error.jsonFileCreation
+        }
     }
 }

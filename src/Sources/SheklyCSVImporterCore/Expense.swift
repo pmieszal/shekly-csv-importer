@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Expense {
+struct Expense: Codable {
     
     let amount: Double
     let date: Date

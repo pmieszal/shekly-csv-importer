@@ -54,10 +54,10 @@ final class ExpenseImporter {
                 let rowStringSeparatedByWhitespaces: String = rowString.replacingOccurrences(of: ";", with: " ; ")
                 let elements: [String.SubSequence] = rowStringSeparatedByWhitespaces.split(separator: ";")
                 
-                let amountsWithDate: [Double: Date] = daysIndexesRange
-                    .reduce([:]) { (dict, dayIndex) -> [Double: Date] in
+                let datesWithAmounts: [Date: Double] = daysIndexesRange
+                    .reduce([:]) { (dict, dayIndex) -> [Date: Double] in
                         
-                        var dict: [Double: Date] = dict
+                        var dict: [Date: Double] = dict
                         let amountRaw: String = String(elements[dayIndex])
                         let amountClean: String = amountRaw
                             .replacingOccurrences(of: "zł", with: "")
@@ -82,13 +82,13 @@ final class ExpenseImporter {
                         
                         guard let date = df.date(from: dateString) else { return dict }
                         
-                        dict[amount] = date
+                        dict[date] = amount
                         
                         return dict
                 }
                 
-                let expenses: [Expense] = amountsWithDate
-                    .map { amount, date -> Expense in
+                let expenses: [Expense] = datesWithAmounts
+                    .map { date, amount -> Expense in
                         return Expense(amount: amount, date: date, category: category.name, subcategory: category.subcategory)
                 }
                 
