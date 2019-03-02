@@ -15,7 +15,7 @@ final class CategoryImporter {
     }
     
     private let fileManager = FileManager.default
-    private let rowOffset: Int = 50
+    private let rowOffset: Int = 49
     
     func getCategories(fromDirectory directory: URL) throws -> [Category] {
         let files = try fileManager.contentsOfDirectory(atPath: directory.path)
@@ -28,7 +28,7 @@ final class CategoryImporter {
         let categoryUrl = directory.appendingPathComponent(categoryFilename)
         
         let stream = InputStream(url: categoryUrl)!
-        let csv: CSVReader = try! CSVReader(stream: stream)
+        let csv: CSVReader = try CSVReader(stream: stream)
         
         var rows: [[String]] = []
         
@@ -42,7 +42,7 @@ final class CategoryImporter {
             .split(separator: ["; ;;;"])
             .first!
         
-        let homeCategories: [Category] = self.getSubcategories(fromSlice: homeCategoriesRowsSlice, orginalRows: rows, categoryName: "Dom")
+        let homeCategories: [Category] = self.getSubcategories(fromSlice: homeCategoriesRowsSlice, categoryName: "Dom")
         
         let flatCategoriesRowsSlice: ArraySlice<[String]> = rows
             .split(separator: [";Mieszkanie;;;"])
@@ -50,7 +50,7 @@ final class CategoryImporter {
             .split(separator: ["; ;;;"])
             .first!
         
-        let flatCategories: [Category] = self.getSubcategories(fromSlice: flatCategoriesRowsSlice, orginalRows: rows, categoryName: "Mieszkanie")
+        let flatCategories: [Category] = self.getSubcategories(fromSlice: flatCategoriesRowsSlice, categoryName: "Mieszkanie")
         
         let transportCategoriesRowsSlice: ArraySlice<[String]> = rows
             .split(separator: [";Transport;;;"])
@@ -58,7 +58,7 @@ final class CategoryImporter {
             .split(separator: ["; ;;;"])
             .first!
         
-        let transportCategories: [Category] = self.getSubcategories(fromSlice: transportCategoriesRowsSlice, orginalRows: rows, categoryName: "Transport")
+        let transportCategories: [Category] = self.getSubcategories(fromSlice: transportCategoriesRowsSlice, categoryName: "Transport")
         
         let hygieneCategoriesRowsSlice: ArraySlice<[String]> = rows
             .split(separator: [";Higiena;;;"])
@@ -66,12 +66,12 @@ final class CategoryImporter {
             .split(separator: ["; ;;;"])
             .first!
         
-        let hygieneCategories: [Category] = self.getSubcategories(fromSlice: hygieneCategoriesRowsSlice, orginalRows: rows, categoryName: "Higiena")
+        let hygieneCategories: [Category] = self.getSubcategories(fromSlice: hygieneCategoriesRowsSlice, categoryName: "Higiena")
         
         return homeCategories + flatCategories + transportCategories + hygieneCategories
     }
     
-    private func getSubcategories(fromSlice slice: ArraySlice<[String]>, orginalRows: [[String]], categoryName: String) -> [Category] {
+    private func getSubcategories(fromSlice slice: ArraySlice<[String]>, categoryName: String) -> [Category] {
         
         let rows: [String] = Array(slice).joined().compactMap { $0 }
         let rowsClean: [String] = rows.map { $0.replacingOccurrences(of: ";", with: "") }
@@ -81,7 +81,7 @@ final class CategoryImporter {
                 guard subcategory != "." else { return }
                 
                 let row = slice.filter { $0.contains { $0.contains(subcategory) } }.first!
-                let index = orginalRows.index(of: row)!
+                let index = slice.index(of: row)!
                 
                 let category: Category = Category(name: categoryName, subcategory: subcategory, row: index + rowOffset)
                 

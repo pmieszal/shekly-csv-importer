@@ -45,8 +45,12 @@ public final class SheklyCSVImporter {
         }
         
         let categoryImporter = CategoryImporter()
-        
         let categories = try categoryImporter.getCategories(fromDirectory: filesDirectory)
+        
+        let expenseImporter = ExpenseImporter()
+        let expenses = try expenseImporter.getExpenses(forMonthWithFilenameDictionary: monthWithFilenameDictionary, months: months, filesDirectory: filesDirectory, categories: categories)
+        
+        //FIXME: nieprawidłowa suma dla wody pitnej, napoje, bułki
         
     }
 }
