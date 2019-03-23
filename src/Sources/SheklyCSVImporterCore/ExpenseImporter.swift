@@ -73,7 +73,7 @@ final class ExpenseImporter {
                         let amount: Double = amountNumber.doubleValue
                         let dayNumberIndex: ClosedRange<Int>.Index = daysIndexesRange.index(of: dayIndex)!
                         let dayNumber: Int = daysIndexesRange.distance(from: daysIndexesRange.startIndex, to: dayNumberIndex)
-                        let dateString: String = "\(dayNumber + 1) \(monthIndex + 1) 2018"
+                        let dateString: String = "\(dayNumber + 1) \(monthIndex + 1) 2019"
                         
                         let df = DateFormatter()
                         df.dateFormat = "d M yyyy"

@@ -51,8 +51,11 @@ public final class SheklyCSVImporter {
         let expenseImporter = ExpenseImporter()
         let expenses = try expenseImporter.getExpenses(forMonthWithFilenameDictionary: monthWithFilenameDictionary, months: months, filesDirectory: filesDirectory, categories: categories)
         
+        let walletName = filesDirectory.lastPathComponent
+        let wallet = Wallet(name: walletName, expenses: expenses)
+        
         let jsonCreator = JSONCreator()
-        let jsonData = try jsonCreator.getJSONData(fromExpenses: expenses)
+        let jsonData = try jsonCreator.getJSONData(fromWallet: wallet)
         
         let jsonPath = filesDirectory.appendingPathComponent("ExpensesJSON.shekly")
         

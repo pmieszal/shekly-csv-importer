@@ -19,8 +19,8 @@ final class JSONCreator {
         self.encoder = encoder
     }
     
-    func getJSONData(fromExpenses expenses: [Expense]) throws -> Data {
-        let data = try encoder.encode(expenses)
+    func getJSONData(fromWallet wallet: Wallet) throws -> Data {
+        let data = try encoder.encode(wallet)
         
         return data
     }
